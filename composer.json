@@ -1,0 +1,25 @@
+{
+    "name": "refactoring/document-validator",
+    "description": "Identity Document Validator",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Miguel Ángel Sánchez Chordi",
+            "email": "mangel.snc@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "DocumentValidator\\": "src/",
+            "DocumentValidator\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "^7.1@dev"
+    }
+}
