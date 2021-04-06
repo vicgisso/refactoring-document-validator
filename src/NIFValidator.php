@@ -26,15 +26,8 @@ class NIFValidator extends AbstractValidator
     public function isValid(): bool
     {
         $isValid = FALSE;
-        $fixedDocNumber = "";
-        $correctDigit = "";
-        $writtenDigit = "";
-        if (!preg_match("/^[A-Z]+$/i", substr($fixedDocNumber, 1, 1))) {
-            $fixedDocNumber = strtoupper(substr("000000000" . $this->docNumber, -9));
-        } else {
-            $fixedDocNumber = strtoupper($this->docNumber);
-        }
-        $writtenDigit = strtoupper(substr($this->docNumber, -1, 1));
+        $fixedDocNumber = substr("000000000" . $this->docNumber, -9);
+        $writtenDigit = substr($this->docNumber, -1, 1);
         if ($this->isValidFormat($fixedDocNumber)) {
             $correctDigit = $this->getCheckDigit($fixedDocNumber);
             if ($writtenDigit == $correctDigit) {
@@ -61,7 +54,7 @@ class NIFValidator extends AbstractValidator
     {
         return $this->respectsDocPattern(
             $docNumber,
-            '/^[KLM0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][a-zA-Z0-9]/'
+            '/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z]/'
         );
     }
     /*
@@ -82,25 +75,8 @@ class NIFValidator extends AbstractValidator
     private function getCheckDigit($docNumber): string
     {
         $keyString = 'TRWAGMYFPDXBNJZSQVHLCKE';
-        $fixedDocNumber = "";
-        $position = 0;
-        $writtenLetter = "";
-        $correctLetter = "";
-        if (!preg_match("/^[A-Z]+$/i", substr($fixedDocNumber, 1, 1))) {
-            $fixedDocNumber = strtoupper(substr("000000000" . $docNumber, -9));
-        } else {
-            $fixedDocNumber = strtoupper($docNumber);
-        }
-        if ($this->isValidFormat($fixedDocNumber)) {
-            $writtenLetter = substr($fixedDocNumber, -1);
-            if ($this->isValidFormat($fixedDocNumber)) {
-                $fixedDocNumber = str_replace('K', '0', $fixedDocNumber);
-                $fixedDocNumber = str_replace('L', '0', $fixedDocNumber);
-                $fixedDocNumber = str_replace('M', '0', $fixedDocNumber);
-                $position = substr($fixedDocNumber, 0, 8) % 23;
-                $correctLetter = substr($keyString, $position, 1);
-            }
-        }
+        $position = substr($docNumber, 0, 8) % 23;
+        $correctLetter = substr($keyString, $position, 1);
         return $correctLetter;
     }
 }
