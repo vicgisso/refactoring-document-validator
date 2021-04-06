@@ -17,6 +17,11 @@ class NIEValidator extends AbstractValidator
      *   Algorithm works as described in:
      *       http://www.interior.gob.es/es/web/servicios-al-ciudadano/dni/calculo-del-digito-de-control-del-nif-nie
      *
+     *   The algorithm for validating the check digits of a NIE number is
+     *   identical to the altorithm for validating NIF numbers. We only have to
+     *   replace Y, X and Z with 1, 0 and 2 respectively; and then, run
+     *   the NIF altorithm
+     * 
      *   Usage:
      *       $validator = new NIEValidator('X6089822C');
      *       echo $validator->isValid();
@@ -26,27 +31,17 @@ class NIEValidator extends AbstractValidator
     public function isValid(): bool
     {
         $isValid = FALSE;
-        $fixedDocNumber = "";
-        if (!preg_match("/^[A-Z]+$/i", substr($fixedDocNumber, 1, 1))) {
-            $fixedDocNumber = strtoupper(substr("000000000" . $this->docNumber, -9));
-        } else {
-            $fixedDocNumber = strtoupper($this->docNumber);
-        }
-        if ($this->isValidFormat($fixedDocNumber)) {
-            if (substr($fixedDocNumber, 1, 1) == "T") {
+        if ($this->isValidFormat($this->docNumber)) {
+
+            $numberWithoutLast = substr($this->docNumber, 0, strlen($this->docNumber) - 1);
+            $lastDigit = substr($this->docNumber, -1, 1);
+            $numberWithoutLast = str_replace('Y', '1', $numberWithoutLast);
+            $numberWithoutLast = str_replace('X', '0', $numberWithoutLast);
+            $numberWithoutLast = str_replace('Z', '2', $numberWithoutLast);
+            $fixedDocNumber = $numberWithoutLast . $lastDigit;
+            $correctDigit = $this->getPersonalDocumentCheckDigit($fixedDocNumber);
+            if ($lastDigit == $correctDigit) {
                 $isValid = TRUE;
-            } else {
-                /* The algorithm for validating the check digits of a NIE number is
-                    identical to the altorithm for validating NIF numbers. We only have to
-                    replace Y, X and Z with 1, 0 and 2 respectively; and then, run
-                    the NIF altorithm */
-                $numberWithoutLast = substr($fixedDocNumber, 0, strlen($fixedDocNumber) - 1);
-                $lastDigit = substr($fixedDocNumber, strlen($fixedDocNumber) - 1, strlen($fixedDocNumber));
-                $numberWithoutLast = str_replace('Y', '1', $numberWithoutLast);
-                $numberWithoutLast = str_replace('X', '0', $numberWithoutLast);
-                $numberWithoutLast = str_replace('Z', '2', $numberWithoutLast);
-                $fixedDocNumber = $numberWithoutLast . $lastDigit;
-                $isValid = false; // $this->isValidNIF($fixedDocNumber);
             }
         }
         return $isValid;
@@ -69,7 +64,7 @@ class NIEValidator extends AbstractValidator
     {
         return $this->respectsDocPattern(
             $docNumber,
-            '/^[XYZT][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z0-9]/'
+            '/^[XYZ][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z0-9]/'
         );
     }
 }
