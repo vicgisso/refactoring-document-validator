@@ -29,7 +29,7 @@ class NIFValidator extends AbstractValidator
         $fixedDocNumber = substr("000000000" . $this->docNumber, -9);
         $writtenDigit = substr($this->docNumber, -1, 1);
         if ($this->isValidFormat($fixedDocNumber)) {
-            $correctDigit = $this->getCheckDigit($fixedDocNumber);
+            $correctDigit = $this->getPersonalDocumentCheckDigit($fixedDocNumber);
             if ($writtenDigit == $correctDigit) {
                 $isValid = TRUE;
             }
@@ -57,26 +57,5 @@ class NIFValidator extends AbstractValidator
             '/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z]/'
         );
     }
-    /*
-     *   This function calculates the check digit for an individual Spanish
-     *   identification number (NIF).
-     *
-     *   You can replace check digit with a zero when calling the function.
-     *
-     *   This function returns:
-     *       - Returns check digit if provided string had a correct NIF structure
-     *       - An empty string otherwise
-     *
-     *   Usage:
-     *       echo getCheckDigit('335764280')
-     *   Returns:
-     *       Q
-     */
-    private function getCheckDigit($docNumber): string
-    {
-        $keyString = 'TRWAGMYFPDXBNJZSQVHLCKE';
-        $position = substr($docNumber, 0, 8) % 23;
-        $correctLetter = substr($keyString, $position, 1);
-        return $correctLetter;
-    }
+
 }

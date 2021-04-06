@@ -45,4 +45,26 @@ abstract class AbstractValidator
         }
         return $isValid;
     }
+    /*
+     *   This function calculates the check digit for an individual Spanish
+     *   identification number (NIF) or first digit parsed NIE document.
+     *
+     *   You can replace check digit with a zero when calling the function.
+     *
+     *   This function returns:
+     *       - Returns check digit if provided string had a correct NIF structure
+     *       - An empty string otherwise
+     *
+     *   Usage:
+     *       echo getPersonalDocumentCheckDigit('335764280')
+     *   Returns:
+     *       Q
+     */
+    protected function getPersonalDocumentCheckDigit($docNumber): string
+    {
+        $keyString = 'TRWAGMYFPDXBNJZSQVHLCKE';
+        $position = substr($docNumber, 0, 8) % 23;
+        $correctLetter = substr($keyString, $position, 1);
+        return $correctLetter;
+    }
 }
