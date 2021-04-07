@@ -46,7 +46,7 @@ class CIFValidator extends AbstractValidator
      *       FALSE: Otherwise
      * 
      *   Usage:
-     *       echo isValidCIFFormat('H24930836')
+     *       echo isValidFormat('H24930836')
      *   Returns:
      *       TRUE
      */
@@ -76,7 +76,7 @@ class CIFValidator extends AbstractValidator
      *       - An empty string otherwise
      * 
      *   Usage:
-     *       echo getCIFCheckDigit('H24930830');
+     *       echo getCheckDigit('H24930830');
      *   Prints:
      *       6
      */
@@ -109,6 +109,7 @@ class CIFValidator extends AbstractValidator
         }
         return $correctDigit;
     }
+
     /*
      *   This function performs the sum, one by one, of the digits
      *   in a given quantity.

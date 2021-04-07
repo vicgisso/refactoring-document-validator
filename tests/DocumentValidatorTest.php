@@ -31,7 +31,7 @@ class DocumentValidatorTest extends TestCase
             'Valid NIF but shorter, and will be filled with zeros on start'
         );
     }
-    
+
     public function testNIEValidation()
     {
         $validator = new DocumentValidator();
@@ -55,7 +55,6 @@ class DocumentValidatorTest extends TestCase
             $validator->isValidIdNumber('X6389822C', 'NIE'),
             'Invalid NIE because claculated check digit does not match.'
         );
-
     }
 
     public function testCIFValidation()

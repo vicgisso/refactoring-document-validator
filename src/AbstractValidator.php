@@ -44,6 +44,7 @@ abstract class AbstractValidator
         }
         return $isValid;
     }
+
     /*
      *   This function calculates the check digit for an individual Spanish
      *   identification number (NIF) or first digit parsed NIE document.

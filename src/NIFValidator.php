@@ -36,6 +36,7 @@ class NIFValidator extends AbstractValidator
         }
         return $isValid;
     }
+
     /*
      *   This function validates the format of a given string in order to
      *   see if it fits with NIF format. Practically, it performs a validation
@@ -57,5 +58,4 @@ class NIFValidator extends AbstractValidator
             '/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z]/'
         );
     }
-
 }

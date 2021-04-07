@@ -46,6 +46,7 @@ class NIEValidator extends AbstractValidator
         }
         return $isValid;
     }
+
     /*
      *   This function validates the format of a given string in order to
      *   see if it fits with NIE format. Practically, it performs a validation
@@ -56,7 +57,7 @@ class NIEValidator extends AbstractValidator
      *       FALSE: Otherwise
      * 
      *   Usage:
-     *       echo isValidNIEFormat('X6089822C')
+     *       echo isValidFormat('X6089822C')
      *   Returns:
      *       TRUE
      */
