@@ -12,7 +12,6 @@ abstract class AbstractValidator
     }
 
     abstract public function isValid(): bool;
-    abstract protected function isValidFormat($docNumber): bool;
 
     /*
      *   This function validates the format of a given string in order to
