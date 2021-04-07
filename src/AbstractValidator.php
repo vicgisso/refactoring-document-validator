@@ -29,18 +29,17 @@ abstract class AbstractValidator
      *   Usage:
      *       echo respectsDocPattern(
      *           '33576428Q',
-     *           '/^[KLM0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z]/' );
+     *           '/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z]/' );
      *   Returns:
      *       TRUE
      */
     protected function respectsDocPattern($givenString, $pattern): bool
     {
         $isValid = FALSE;
-        $fixedString = strtoupper($givenString);
-        if (is_int(substr($fixedString, 0, 1))) {
-            $fixedString = substr("000000000" . $givenString, -9);
+        if (is_int(substr($givenString, 0, 1))) {
+            $givenString = substr("000000000" . $givenString, -9);
         }
-        if (preg_match($pattern, $fixedString)) {
+        if (preg_match($pattern, $givenString)) {
             $isValid = TRUE;
         }
         return $isValid;
