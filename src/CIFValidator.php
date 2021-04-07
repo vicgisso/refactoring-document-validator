@@ -26,17 +26,9 @@ class CIFValidator extends AbstractValidator
     public function isValid(): bool
     {
         $isValid = FALSE;
-        $fixedDocNumber = "";
-        $correctDigit = "";
-        $writtenDigit = "";
-        $fixedDocNumber = strtoupper($this->docNumber);
-
-        $writtenDigit = substr($fixedDocNumber, -1, 1);
-        if ($this->isValidFormat($fixedDocNumber) == 1) {
-            $correctDigit = $this->getCheckDigit($fixedDocNumber);
-            // if ($this->digitNeedsConversion($this->docNumber)) {
-            //     $correctDigit = $this->convertCheckDigit($correctDigit);
-            // }
+        $writtenDigit = substr($this->docNumber, -1, 1);
+        if ($this->isValidFormat($this->docNumber) == 1) {
+            $correctDigit = $this->getCheckDigit($this->docNumber);
             if ($writtenDigit == $correctDigit) {
                 $isValid = TRUE;
             }
@@ -63,7 +55,7 @@ class CIFValidator extends AbstractValidator
         return
             $this->respectsDocPattern(
                 $docNumber,
-                '/^[PQSNWR][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z0-9]/'
+                '/^[PQSNWR][0-9][0-9][0-9][0-9][0-9][0-9][0-9][JABCDEFGHI]/'
             )
             or
             $this->respectsDocPattern(
@@ -90,74 +82,33 @@ class CIFValidator extends AbstractValidator
      */
     private function getCheckDigit($docNumber)
     {
-        $fixedDocNumber = "";
-        $centralChars = "";
-        $firstChar = "";
-        $evenSum = 0;
-        $oddSum = 0;
-        $totalSum = 0;
-        $lastDigitTotalSum = 0;
         $correctDigit = "";
-        $fixedDocNumber = strtoupper($docNumber);
-        if ($this->isValidFormat($fixedDocNumber)) {
-            $firstChar = substr($fixedDocNumber, 0, 1);
-            $centralChars = substr($fixedDocNumber, 1, 7);
-            $evenSum =
-                substr($centralChars, 1, 1) +
-                substr($centralChars, 3, 1) +
-                substr($centralChars, 5, 1);
-            $oddSum =
-                $this->sumDigits(substr($centralChars, 0, 1) * 2) +
-                $this->sumDigits(substr($centralChars, 2, 1) * 2) +
-                $this->sumDigits(substr($centralChars, 4, 1) * 2) +
-                $this->sumDigits(substr($centralChars, 6, 1) * 2);
-            $totalSum = $evenSum + $oddSum;
-            $lastDigitTotalSum = substr($totalSum, -1);
-            if ($lastDigitTotalSum > 0) {
-                $correctDigit = 10 - ($lastDigitTotalSum % 10);
-            } else {
-                $correctDigit = 0;
-            }
+        $firstChar = substr($docNumber, 0, 1);
+        $centralChars = substr($docNumber, 1, 7);
+        $evenSum =
+            substr($centralChars, 1, 1) +
+            substr($centralChars, 3, 1) +
+            substr($centralChars, 5, 1);
+        $oddSum =
+            $this->sumDigits(substr($centralChars, 0, 1) * 2) +
+            $this->sumDigits(substr($centralChars, 2, 1) * 2) +
+            $this->sumDigits(substr($centralChars, 4, 1) * 2) +
+            $this->sumDigits(substr($centralChars, 6, 1) * 2);
+        $totalSum = $evenSum + $oddSum;
+        $lastDigitTotalSum = $totalSum % 10;
+        if ($lastDigitTotalSum > 0) {
+            $correctDigit = 10 - $lastDigitTotalSum;
+        } else {
+            $correctDigit = 0;
         }
 
         /* If CIF number starts with P, Q, S, N, W or R,
             check digit should be a letter */
-            if (preg_match('/[PQSNWR]/', $firstChar)) {
-                $correctDigit = substr("JABCDEFGHI", $correctDigit, 1);
-            }
-            return $correctDigit;
-    }
-
-    /*
-     *   This function converts calculated check digit in letter
-     * 
-     *   Usage:
-     *       echo convertCheckDigit(8);
-     *   Returns:
-     *       'H'
-     */
-    private function convertCheckDigit($calculatedDigit): string
-    {
-        return substr("JABCDEFGHI", $calculatedDigit, 1);
-    }
-
-    /*
-     *   This function checks if CIF number needs conversion to letter
-     * 
-     *   Usage:
-     *       echo digitNeedsConversion('W2849191H');
-     *   Returns:
-     *       TRUE
-     */
-    private function digitNeedsConversion($docNumber): bool
-    {
-        $firstChar = substr($docNumber, 0, 1);
         if (preg_match('/[PQSNWR]/', $firstChar)) {
-            return TRUE;
+            $correctDigit = substr("JABCDEFGHI", $correctDigit, 1);
         }
-        return FALSE;
+        return $correctDigit;
     }
-
     /*
      *   This function performs the sum, one by one, of the digits
      *   in a given quantity.
